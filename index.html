@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weatherly Admin Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Chart.js (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="layout">
+
+    <!-- Header  -->
+    <header class="header" role="banner">
+      <div class="header__left">
+        <h1 class="title">Weather Tracker</h1>
+        <p class="subtitle">Datos en vivo desde Open‑Meteo</p>
+      </div>
+
+      <div class="header__right">
+        <div class="location-control">
+          <button id="changeLocationBtn" class="btn btn--secondary" aria-haspopup="dialog" aria-controls="locationModal">
+            Cambiar ubicación
+          </button>
+          <span id="location-badge" class="location-badge">—</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main -->
+    <main class="main" role="main">
+      <!-- Cards -->
+      <section class="cards" aria-labelledby="cards-title">
+        <h2 id="cards-title" class="sr-only">Tarjetas de resumen</h2>
+
+        <article class="card card--primary" aria-label="Clima actual">
+          <header class="card__header">
+            <h3>Clima actual</h3>
+            <span class="badge">—</span>
+          </header>
+          <div class="metric">
+            <span class="metric__value">--°C</span>
+            <span class="metric__range">Max --°C • Min --°C</span>
+            <span class="metric__cond">—</span>
+          </div>
+        </article>
+
+        <article class="card" aria-label="Pronóstico 7 días">
+          <header class="card__header"><h3>Pronóstico 7 días</h3></header>
+          <div class="forecast" aria-live="polite">
+            <div class="day"><span class="day__name">---</span><span class="day__temp">--°C</span></div>
+            <div class="day"><span class="day__name">---</span><span class="day__temp">--°C</span></div>
+            <div class="day"><span class="day__name">---</span><span class="day__temp">--°C</span></div>
+            <div class="day"><span class="day__name">---</span><span class="day__temp">--°C</span></div>
+            <div class="day"><span class="day__name">---</span><span class="day__temp">--°C</span></div>
+            <div class="day"><span class="day__name">---</span><span class="day__temp">--°C</span></div>
+            <div class="day"><span class="day__name">---</span><span class="day__temp">--°C</span></div>
+          </div>
+        </article>
+
+        <article class="card" aria-label="Esenciales del día">
+          <header class="card__header"><h3>Esenciales del día</h3></header>
+          <div class="essentials">
+            <div><strong>Salida del sol:</strong> <span id="sunrise">--:--</span></div>
+            <div><strong>Puesta del sol:</strong> <span id="sunset">--:--</span></div>
+          </div>
+        </article>
+      </section>
+
+      <!-- Charts -->
+      <section class="grid-panels" aria-labelledby="charts-title">
+        <h2 id="charts-title" class="sr-only">Gráficos</h2>
+
+        <!-- Temperature  -->
+        <article class="panel" aria-label="Tendencia de temperatura">
+          <header class="panel__header">
+            <h3>Tendencia de temperatura</h3>
+            <span class="note" id="temp-note">—</span>
+          </header>
+          <div class="chart chart--line" role="img" aria-label="Temperatura por hora">
+            <canvas id="tempTrend" aria-label="Gráfico de tendencia de temperatura" role="img"></canvas>
+          </div>
+        </article>
+
+        <!-- Precipitation -->
+        <article class="panel" aria-label="Precipitación semanal">
+          <header class="panel__header">
+            <h3>Precipitación semanal</h3>
+            <span class="note">mm por día</span>
+          </header>
+          <div class="chart chart--bars" role="img" aria-label="Precipitación semanal">
+            <canvas id="precipChart" aria-label="Gráfico de precipitación semanal" role="img"></canvas>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+      <p>© 2025 Weatherly Admin. Datos demostrativos para fines educativos.</p>
+    </footer>
+  </div>
+
+  <!-- Modal de selección de ubicación -->
+  <div id="modal-backdrop" class="modal-backdrop" hidden></div>
+
+  <div id="locationModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc" hidden>
+    <div class="modal__panel" role="document">
+      <header class="modal__header">
+        <h2 id="modalTitle">Selecciona tu ubicación</h2>
+      </header>
+
+      <div id="modalDesc" class="modal__body">
+        <p>Elige la ubicación para cargar datos meteorológicos. Puedes cambiarla luego en Ajustes.</p>
+
+        <form id="locationForm">
+          <label for="presetLocation">Ubicaciones rápidas</label>
+          <select id="presetLocation" name="presetLocation">
+            <option value="">-- Seleccionar --</option>
+            <option value="montevideo">Montevideo, UY</option>
+            <option value="bogota">Bogotá, CO</option>
+            <option value="sydney">Sydney, AU</option>
+            <option value="melbourne">Melbourne, AU</option>
+            <option value="perth">Perth, AU</option>
+            <option value="darwin">Darwin, AU</option>
+            <option value="custom">Personalizada (lat/lon)</option>
+          </select>
+
+          <div id="customInputs" class="custom-inputs" hidden>
+            <label for="lat">Latitud</label>
+            <input id="lat" name="lat" type="number" step="0.0001" placeholder="-34.90" />
+            <label for="lon">Longitud</label>
+            <input id="lon" name="lon" type="number" step="0.0001" placeholder="-56.16" />
+          </div>
+
+          <div class="modal__actions">
+            <button type="button" id="useDefault" class="btn btn--secondary">Usar ubicación por defecto</button>
+            <button type="submit" id="confirmLocation" class="btn btn--primary">Aceptar</button>
+          </div>
+        </form>
+      </div>
+
+      <button id="closeModalBtn" class="modal__close" aria-label="Cerrar diálogo">✕</button>
+    </div>
+  </div>
+
+  <!-- Unified script -->
+  <script src="unified-script.js" defer></script>
+</body>
+</html>

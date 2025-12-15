@@ -1,0 +1,231 @@
+/* -----------------------------
+   Variables and base styles
+------------------------------ */
+:root {
+  --bg: #0e1420;
+  --panel: #151c2c;
+  --panel-2: #1a2235;
+  --text: #e6edf7;
+  --muted: #9fb0c7;
+  --primary: #4ea6ff;
+  --accent: #ffb545;
+  --danger: #ff6b6b;
+  --warning: #f4d35e;
+  --shadow: 0 8px 20px rgba(0,0,0,.35);
+  --radius: 14px;
+  --space: 16px;
+  --space-lg: 24px;
+  --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--text);
+  background: linear-gradient(180deg,#0b1120,#0e1420 50%,#0b1120);
+}
+
+/* -----------------------------
+   Grid layout  
+------------------------------ */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "header"
+    "main"
+    "footer";
+  min-height: 100vh;
+}
+
+.header  { grid-area: header; padding: var(--space-lg); display: flex; justify-content: space-between; align-items: center; }
+.main    { grid-area: main; padding: var(--space-lg); }
+.footer  { grid-area: footer; padding: var(--space-lg); color: var(--muted); border-top: 1px solid #22304a; }
+
+/* -----------------------------
+   Header 
+------------------------------ */
+.title { margin: 0; }
+.subtitle { margin-top: 4px; color: var(--muted); }
+
+.header__right { display: flex; align-items: center; gap: 12px; }
+.location-control { display: flex; align-items: center; gap: 10px; }
+.location-badge { color: var(--muted); background: #22304a; padding: 6px 10px; border-radius: 999px; font-size: 13px; }
+
+/* -----------------------------
+   Cards
+------------------------------ */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(240px, 1fr));
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+.card {
+  background: var(--panel); border: 1px solid #22304a; border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: var(--space-lg); transition: transform .12s ease, border-color .2s ease;
+}
+.card:hover, .card:focus { transform: translateY(-3px); border-color: var(--primary); outline: none; }
+.card--primary { background: linear-gradient(135deg,#15223d,#19284a); border-color: #2a3d62; }
+
+.card__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.badge { background: #22304a; color: var(--muted); padding: 4px 8px; border-radius: 999px; font-size: 12px; }
+
+.metric { display: flex; flex-direction: column; gap: 4px; }
+.metric__value { font-size: 42px; font-weight: 700; }
+.metric__range, .metric__cond { color: var(--muted); }
+
+/* Forecast row */
+.forecast { display: flex; gap: 10px; flex-wrap: wrap; }
+.day {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: var(--panel-2); padding: 8px 10px; border-radius: 10px; color: var(--muted);
+  border: 1px solid #2a3857; transition: background .2s ease, color .2s ease;
+}
+.day:hover, .day:focus { background: #22304a; color: var(--text); outline: none; }
+.day__name { font-weight: 600; }
+
+/* Essentials */
+.essentials { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; color: var(--muted); }
+
+/* -----------------------------
+   Panels & Charts
+------------------------------ */
+.grid-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+  margin-top: var(--space-lg);
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid #22304a;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--space-lg);
+}
+
+.panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 12px;
+}
+
+.note { color: var(--muted); font-size: 13px; }
+
+.chart {
+  width: 100%;
+  height: 260px;
+}
+
+canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* -----------------------------
+   Modal / Backdrop
+------------------------------ */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(2,6,23,0.6);
+  z-index: 1200;
+  backdrop-filter: blur(2px);
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1300;
+  padding: 20px;
+}
+
+.modal__panel {
+  width: min(720px, 96%);
+  background: linear-gradient(180deg, #0f1724, #111827);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+  color: var(--text);
+  position: relative;
+}
+
+.modal__header h2 { margin: 0 0 8px 0; font-size: 1.25rem; }
+.modal__body p { color: var(--muted); margin-bottom: 12px; }
+
+label { display: block; margin-top: 8px; color: var(--muted); font-size: 0.9rem; }
+select, input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: 1px solid #22304a;
+  background: var(--panel-2);
+  color: var(--text);
+}
+
+.custom-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+
+.modal__actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+.btn { padding: 8px 12px; border-radius: 8px; border: none; cursor: pointer; }
+.btn--primary { background: var(--primary); color: #071428; font-weight: 700; }
+.btn--secondary { background: transparent; color: var(--muted); border: 1px solid #2a3857; }
+
+.modal__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  color: var(--muted);
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Hidden helper */
+[hidden] { display: none !important; }
+
+/* -----------------------------
+   Accessibility helpers
+------------------------------ */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+
+/* -----------------------------
+   Responsiveness
+------------------------------ */
+@media (max-width: 1024px) {
+  .cards { grid-template-columns: 1fr 1fr; }
+  .grid-panels { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "main"
+      "footer";
+  }
+  .header { padding: 12px; }
+  .cards { grid-template-columns: 1fr; gap: 12px; }
+}
